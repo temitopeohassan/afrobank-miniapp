@@ -1,0 +1,262 @@
+{
+  "services": [
+    {
+      "id": "airtime-1",
+      "name": "MTN Airtime",
+      "description": "Top up your MTN mobile phone with airtime",
+      "category": "airtime",
+      "operator": "MTN",
+      "country": "Nigeria",
+      "countryCode": "NG",
+      "price": "100",
+      "currency": "NGN",
+      "minAmount": "50",
+      "maxAmount": "50000",
+      "icon": "smartphone",
+      "popular": true,
+      "featured": true
+    },
+    {
+      "id": "airtime-2",
+      "name": "Airtel Airtime",
+      "description": "Top up your Airtel mobile phone with airtime",
+      "category": "airtime",
+      "operator": "Airtel",
+      "country": "Nigeria",
+      "countryCode": "NG",
+      "price": "100",
+      "currency": "NGN",
+      "minAmount": "50",
+      "maxAmount": "50000",
+      "icon": "smartphone",
+      "popular": true,
+      "featured": false
+    },
+    {
+      "id": "data-1",
+      "name": "MTN Data Bundle",
+      "description": "Purchase MTN data bundles for internet access",
+      "category": "data",
+      "operator": "MTN",
+      "country": "Nigeria",
+      "countryCode": "NG",
+      "price": "200",
+      "currency": "NGN",
+      "minAmount": "100",
+      "maxAmount": "10000",
+      "icon": "wifi",
+      "popular": true,
+      "featured": true
+    },
+    {
+      "id": "data-2",
+      "name": "Airtel Data Bundle",
+      "description": "Purchase Airtel data bundles for internet access",
+      "category": "data",
+      "operator": "Airtel",
+      "country": "Nigeria",
+      "countryCode": "NG",
+      "price": "200",
+      "currency": "NGN",
+      "minAmount": "100",
+      "maxAmount": "10000",
+      "icon": "wifi",
+      "popular": true,
+      "featured": false
+    },
+    {
+      "id": "bills-1",
+      "name": "Electricity Bill Payment",
+      "description": "Pay your electricity utility bills with Ikeja Electric, Eko Electricity, and more",
+      "category": "bills",
+      "operator": "Multiple",
+      "country": "Nigeria",
+      "countryCode": "NG",
+      "price": "0",
+      "currency": "NGN",
+      "minAmount": "100",
+      "maxAmount": "100000",
+      "icon": "zap",
+      "popular": true,
+      "featured": true
+    },
+    {
+      "id": "bills-2",
+      "name": "Water Bill Payment",
+      "description": "Pay your water utility bills with Lagos Water Corporation and other providers",
+      "category": "bills",
+      "operator": "Multiple",
+      "country": "Nigeria",
+      "countryCode": "NG",
+      "price": "0",
+      "currency": "NGN",
+      "minAmount": "100",
+      "maxAmount": "50000",
+      "icon": "droplets",
+      "popular": false,
+      "featured": false
+    },
+    {
+      "id": "bills-3",
+      "name": "Gas Bill Payment",
+      "description": "Pay your gas utility bills with Nigerian Gas Company and other providers",
+      "category": "bills",
+      "operator": "Multiple",
+      "country": "Nigeria",
+      "countryCode": "NG",
+      "price": "0",
+      "currency": "NGN",
+      "minAmount": "100",
+      "maxAmount": "50000",
+      "icon": "flame",
+      "popular": false,
+      "featured": false
+    },
+    {
+      "id": "bills-4",
+      "name": "Internet & Cable TV",
+      "description": "Pay your internet and cable TV bills with DSTV, GOTV, and other providers",
+      "category": "bills",
+      "operator": "Multiple",
+      "country": "Nigeria",
+      "countryCode": "NG",
+      "price": "0",
+      "currency": "NGN",
+      "minAmount": "100",
+      "maxAmount": "100000",
+      "icon": "tv",
+      "popular": true,
+      "featured": false
+    },
+    {
+      "id": "card-1",
+      "name": "Virtual Debit Card",
+      "description": "Create a virtual debit card for online transactions",
+      "category": "cards",
+      "operator": "Afro Bank",
+      "country": "Nigeria",
+      "countryCode": "NG",
+      "price": "0",
+      "currency": "NGN",
+      "minAmount": "0",
+      "maxAmount": "0",
+      "icon": "credit-card",
+      "popular": false,
+      "featured": true
+    },
+    {
+      "id": "giftcard-1",
+      "name": "Amazon Gift Cards",
+      "description": "Purchase Amazon gift cards for online shopping",
+      "category": "giftcards",
+      "operator": "Amazon",
+      "country": "Global",
+      "countryCode": "US",
+      "price": "25",
+      "currency": "USD",
+      "minAmount": "10",
+      "maxAmount": "2000",
+      "icon": "gift",
+      "popular": true,
+      "featured": true
+    },
+    {
+      "id": "giftcard-2",
+      "name": "Netflix Gift Cards",
+      "description": "Purchase Netflix gift cards for streaming entertainment",
+      "category": "giftcards",
+      "operator": "Netflix",
+      "country": "Global",
+      "countryCode": "US",
+      "price": "30",
+      "currency": "USD",
+      "minAmount": "15",
+      "maxAmount": "200",
+      "icon": "gift",
+      "popular": true,
+      "featured": false
+    },
+    {
+      "id": "giftcard-3",
+      "name": "Steam Gift Cards",
+      "description": "Purchase Steam gift cards for gaming",
+      "category": "giftcards",
+      "operator": "Steam",
+      "country": "Global",
+      "countryCode": "US",
+      "price": "20",
+      "currency": "USD",
+      "minAmount": "10",
+      "maxAmount": "100",
+      "icon": "gift",
+      "popular": false,
+      "featured": true
+    }
+  ],
+  "categories": [
+    {
+      "id": "airtime",
+      "name": "Airtime",
+      "description": "Mobile phone airtime top-ups",
+      "icon": "smartphone"
+    },
+    {
+      "id": "data",
+      "name": "Data",
+      "description": "Internet data bundles",
+      "icon": "wifi"
+    },
+    {
+      "id": "bills",
+      "name": "Bills",
+      "description": "Utility bill payments",
+      "icon": "receipt"
+    },
+    {
+      "id": "cards",
+      "name": "Cards",
+      "description": "Virtual and physical cards",
+      "icon": "credit-card"
+    },
+    {
+      "id": "giftcards",
+      "name": "Gift Cards",
+      "description": "Digital and physical gift cards",
+      "icon": "gift"
+    }
+  ],
+  "operators": [
+    {
+      "id": "mtn-ng",
+      "name": "MTN Nigeria",
+      "country": "Nigeria",
+      "countryCode": "NG",
+      "type": "mobile",
+      "logo": "mtn-logo.png"
+    },
+    {
+      "id": "airtel-ng",
+      "name": "Airtel Nigeria",
+      "country": "Nigeria",
+      "countryCode": "NG",
+      "type": "mobile",
+      "logo": "airtel-logo.png"
+    },
+    {
+      "id": "glo-ng",
+      "name": "Glo Nigeria",
+      "country": "Nigeria",
+      "countryCode": "NG",
+      "type": "mobile",
+      "logo": "glo-logo.png"
+    },
+    {
+      "id": "9mobile-ng",
+      "name": "9mobile Nigeria",
+      "country": "Nigeria",
+      "countryCode": "NG",
+      "type": "mobile",
+      "logo": "9mobile-logo.png"
+    }
+  ]
+}

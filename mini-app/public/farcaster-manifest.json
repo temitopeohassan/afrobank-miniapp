@@ -1,0 +1,31 @@
+{
+  "name": "Afro Bank",
+  "description": "Your trusted financial partner - Buy airtime, data, pay bills, and get virtual cards",
+  "icon": "/icon.svg",
+  "splash": "/icon.svg",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "categories": ["finance", "utilities", "banking"],
+  "lang": "en",
+  "dir": "ltr",
+  "shortcuts": [
+    {
+      "name": "Buy Airtime",
+      "short_name": "Airtime",
+      "description": "Top up your mobile phone",
+      "url": "/buy-airtime",
+      "icons": [{ "src": "/icon.svg", "sizes": "96x96" }]
+    },
+    {
+      "name": "Buy Data",
+      "short_name": "Data",
+      "description": "Purchase data bundles",
+      "url": "/buy-data",
+      "icons": [{ "src": "/icon.svg", "sizes": "96x96" }]
+    }
+  ]
+}
