@@ -14,9 +14,9 @@ contract DeployPaymentProcessor is Script {
         address owner = vm.envAddress("OWNER"); 
 
         // Example stablecoin addresses (adjust for your network)
-        address ;
+        address[] memory initialTokens = new address[](2);
         initialTokens[0] = vm.envAddress("USDC_ADDRESS");
-        initialTokens[1] = vm.envAddress("USDT_ADDRESS");
+        initialTokens[1] = vm.envAddress("CNGN_ADDRESS");
 
         vm.startBroadcast(deployerPrivateKey);
 
@@ -28,7 +28,7 @@ contract DeployPaymentProcessor is Script {
 
         vm.stopBroadcast();
 
-        console.log("✅ PaymentProcessor deployed at:", address(processor));
+        console.log("PaymentProcessor deployed at:", address(processor));
         console.log("Receiver:", paymentReceiver);
         console.log("Owner:", owner);
     }
