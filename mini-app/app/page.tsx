@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Smartphone, Wifi, Receipt, CreditCard, Gift } from "lucide-react"
+import { Smartphone, Wifi, Receipt, CreditCard} from "lucide-react"
 import { useEffect } from "react"
 import { sdk } from "@farcaster/miniapp-sdk"
 import { WalletDisplay } from "@/components/wallet-display"
@@ -27,12 +27,6 @@ export default function HomePage() {
       icon: Receipt,
       href: "/pay-bills",
       description: "Pay your utility bills",
-    },
-    {
-      title: "Gift Cards",
-      icon: Gift,
-      href: "/gift-cards",
-      description: "Buy digital gift cards",
     },
     {
       title: "Virtual Card",
@@ -62,7 +56,7 @@ export default function HomePage() {
       {/* Header */}
       <header className="bg-primary text-primary-foreground p-6">
         <div className="max-w-md mx-auto">
-          <h1 className="text-2xl font-bold text-center mb-4">Afro Bank</h1>
+          <img src="/header-logo.png" alt="Afro Bank Logo" className="mx-auto mb-4 h-12 w-auto" />
           <p className="text-center text-sm opacity-90 mb-4">Your trusted financial partner</p>
           
           {/* Wallet Display */}
