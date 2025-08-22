@@ -1,0 +1,18 @@
+[
+  {
+    "id": "card-1",
+    "name": "Virtual Debit Card",
+    "description": "Create a virtual debit card for online transactions",
+    "category": "cards",
+    "operator": "Afro Bank",
+    "country": "Nigeria",
+    "countryCode": "NG",
+    "price": "0",
+    "currency": "NGN",
+    "minAmount": "0",
+    "maxAmount": "0",
+    "icon": "credit-card",
+    "popular": false,
+    "featured": true
+  }
+]

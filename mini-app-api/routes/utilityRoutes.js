@@ -23,13 +23,23 @@ router.get('/billers/:billerId/products', getUtilityBillerProducts);
 router.get('/bill-types', getUtilityBillTypes);
 router.get('/countries', getUtilityCountries);
 
+// Frontend compatibility endpoints
+router.get('/getBillTypes', getUtilityBillTypes);
+router.get('/getCountries', getUtilityCountries);
+
 // Utility Bill Validation
 router.post('/bills/validate', validateUtilityBill);
+
+// Frontend compatibility endpoint
+router.post('/validateBill', validateUtilityBill);
 
 // Utility Bill Payments
 router.post('/bills', payUtilityBill);
 router.get('/bills', getUtilityBills);
 router.get('/bills/:billId', getUtilityBillById);
+
+// Frontend compatibility endpoint
+router.post('/payBill', payUtilityBill);
 
 // Utility Bill Search (placeholder for future implementation)
 router.get('/search', (req, res) => {

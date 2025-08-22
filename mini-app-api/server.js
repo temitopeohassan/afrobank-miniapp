@@ -1,4 +1,4 @@
-// index.js - Afro Bank Mini App API Server
+// server.js - Afro Bank Mini App API Server
 
 const express = require('express');
 const mongoose = require('mongoose');
@@ -10,6 +10,7 @@ const topupRoutes = require('./routes/topupRoutes');
 const userRoutes = require('./routes/userRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
+const servicesDataRoutes = require('./routes/servicesDataRoutes');
 const giftCardRoutes = require('./routes/giftCardRoutes');
 const utilityRoutes = require('./routes/utilityRoutes');
 
@@ -45,8 +46,7 @@ app.use(cors({
     'http://localhost:3000',
     'http://localhost:5173',
     'http://localhost:8080',
-    'https://mini-app-six-lime.vercel.app/',
-    'https://mini-app-orcin-seven.vercel.app/'  
+    'https://afrobank-miniapp-demo.vercel.app/'  
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
@@ -92,6 +92,10 @@ app.use('/api/topup', topupRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/services', serviceRoutes);
+app.use('/services-data', servicesDataRoutes); // Frontend compatibility endpoint
+app.use('/send-topup', topupRoutes); // Frontend compatibility endpoint
+app.use('/validateBill', utilityRoutes); // Frontend compatibility endpoint
+app.use('/payBill', utilityRoutes); // Frontend compatibility endpoint
 app.use('/api/giftcards', giftCardRoutes);
 app.use('/api/utility', utilityRoutes);
 

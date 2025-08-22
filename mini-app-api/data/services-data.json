@@ -1,0 +1,34 @@
+[
+  {
+    "id": "data-1",
+    "name": "MTN Data Bundle",
+    "description": "Purchase MTN data bundles for internet access",
+    "category": "data",
+    "operator": "MTN",
+    "country": "Nigeria",
+    "countryCode": "NG",
+    "price": "200",
+    "currency": "NGN",
+    "minAmount": "100",
+    "maxAmount": "10000",
+    "icon": "wifi",
+    "popular": true,
+    "featured": true
+  },
+  {
+    "id": "data-2",
+    "name": "Airtel Data Bundle",
+    "description": "Purchase Airtel data bundles for internet access",
+    "category": "data",
+    "operator": "Airtel",
+    "country": "Nigeria",
+    "countryCode": "NG",
+    "price": "200",
+    "currency": "NGN",
+    "minAmount": "100",
+    "maxAmount": "10000",
+    "icon": "wifi",
+    "popular": true,
+    "featured": false
+  }
+]

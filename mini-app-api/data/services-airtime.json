@@ -1,0 +1,34 @@
+[
+  {
+    "id": "airtime-1",
+    "name": "MTN Airtime",
+    "description": "Top up your MTN mobile phone with airtime",
+    "category": "airtime",
+    "operator": "MTN",
+    "country": "Nigeria",
+    "countryCode": "NG",
+    "price": "100",
+    "currency": "NGN",
+    "minAmount": "50",
+    "maxAmount": "50000",
+    "icon": "smartphone",
+    "popular": true,
+    "featured": true
+  },
+  {
+    "id": "airtime-2",
+    "name": "Airtel Airtime",
+    "description": "Top up your Airtel mobile phone with airtime",
+    "category": "airtime",
+    "operator": "Airtel",
+    "country": "Nigeria",
+    "countryCode": "NG",
+    "price": "100",
+    "currency": "NGN",
+    "minAmount": "50",
+    "maxAmount": "50000",
+    "icon": "smartphone",
+    "popular": true,
+    "featured": false
+  }
+]

@@ -9,8 +9,6 @@ export const metadata: Metadata = {
   description: 'Buy airtime, data, pay bills, and get virtual cards with Afro Bank',
   generator: 'Next.js',
   manifest: '/farcaster-manifest.json',
-  themeColor: '#000000',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
@@ -21,6 +19,14 @@ export const metadata: Metadata = {
     description: 'Your trusted financial partner',
     type: 'website',
   },
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: '#000000',
 }
 
 export default function RootLayout({

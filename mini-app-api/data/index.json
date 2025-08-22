@@ -1,0 +1,12 @@
+{
+  "country": "country.json",
+  "services": {
+    "airtime": "services-airtime.json",
+    "data": "services-data.json",
+    "bills": "services-bills.json",
+    "cards": "services-cards.json",
+    "giftcards": "services-giftcards.json"
+  },
+  "categories": "categories.json",
+  "operators": "operators.json"
+}

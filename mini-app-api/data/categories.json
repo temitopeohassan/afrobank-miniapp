@@ -1,0 +1,32 @@
+[
+  {
+    "id": "airtime",
+    "name": "Airtime",
+    "description": "Mobile phone airtime top-ups",
+    "icon": "smartphone"
+  },
+  {
+    "id": "data",
+    "name": "Data",
+    "description": "Internet data bundles",
+    "icon": "wifi"
+  },
+  {
+    "id": "bills",
+    "name": "Bills",
+    "description": "Utility bill payments",
+    "icon": "receipt"
+  },
+  {
+    "id": "cards",
+    "name": "Cards",
+    "description": "Virtual and physical cards",
+    "icon": "credit-card"
+  },
+  {
+    "id": "giftcards",
+    "name": "Gift Cards",
+    "description": "Digital and physical gift cards",
+    "icon": "gift"
+  }
+]

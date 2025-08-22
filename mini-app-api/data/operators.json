@@ -1,0 +1,34 @@
+[
+  {
+    "id": "mtn-ng",
+    "name": "MTN Nigeria",
+    "country": "Nigeria",
+    "countryCode": "NG",
+    "type": "mobile",
+    "logo": "mtn-logo.png"
+  },
+  {
+    "id": "airtel-ng",
+    "name": "Airtel Nigeria",
+    "country": "Nigeria",
+    "countryCode": "NG",
+    "type": "mobile",
+    "logo": "airtel-logo.png"
+  },
+  {
+    "id": "glo-ng",
+    "name": "Glo Nigeria",
+    "country": "Nigeria",
+    "countryCode": "NG",
+    "type": "mobile",
+    "logo": "glo-logo.png"
+  },
+  {
+    "id": "9mobile-ng",
+    "name": "9mobile Nigeria",
+    "country": "Nigeria",
+    "countryCode": "NG",
+    "type": "mobile",
+    "logo": "9mobile-logo.png"
+  }
+]
