@@ -7,6 +7,9 @@ const { sendTopup, getOperators, getProducts } = require('../controllers/topupCo
 // Send airtime/data topup
 router.post('/send', sendTopup);
 
+// Frontend compatibility endpoint
+router.post('/send-topup', sendTopup);
+
 // Get available operators for a country
 router.get('/operators', getOperators);
 

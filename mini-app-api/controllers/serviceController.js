@@ -1,13 +1,15 @@
 // controllers/serviceController.js
 
-const servicesData = require('../data.json');
+const dataService = require('../services/dataService');
 
 // Get all services data
 const getAllServices = async (req, res) => {
   try {
     console.log('📡 GET /services - Services data requested');
-    console.log('📦 Response data:', JSON.stringify(servicesData, null, 2));
     
+    const servicesData = await dataService.getAllServices();
+    console.log('📦 Response data loaded from separated files');
+
     res.json({
       success: true,
       data: servicesData,
@@ -27,22 +29,15 @@ const getAllServices = async (req, res) => {
 const getServiceById = async (req, res) => {
   try {
     const { serviceId } = req.params;
-    
+
     if (!serviceId) {
       return res.status(400).json({
         error: 'Service ID is required'
       });
     }
 
-    // Find service by ID in the services data
-    const service = servicesData.services?.find(s => s.id === serviceId);
-    
-    if (!service) {
-      return res.status(404).json({
-        error: 'Service not found',
-        serviceId
-      });
-    }
+    // Find service by ID using the data service
+    const service = await dataService.getServiceById(serviceId);
 
     res.json({
       success: true,
@@ -51,6 +46,16 @@ const getServiceById = async (req, res) => {
     });
   } catch (err) {
     console.error('❌ Error getting service by ID:', err.message);
+    
+    if (err.message.includes('not found')) {
+      return res.status(404).json({
+        success: false,
+        error: 'Service not found',
+        serviceId,
+        details: err.message
+      });
+    }
+    
     res.status(500).json({
       success: false,
       error: 'Failed to get service',
@@ -63,29 +68,33 @@ const getServiceById = async (req, res) => {
 const getServicesByCategory = async (req, res) => {
   try {
     const { category } = req.params;
-    
+
     if (!category) {
       return res.status(400).json({
         error: 'Category is required'
       });
     }
 
-    // Filter services by category
-    const filteredServices = servicesData.services?.filter(s => 
-      s.category?.toLowerCase() === category.toLowerCase()
-    ) || [];
+    // Get services by category using the data service
+    const categoryData = await dataService.getServicesByCategory(category);
 
     res.json({
       success: true,
-      data: {
-        category,
-        services: filteredServices,
-        count: filteredServices.length
-      },
+      data: categoryData,
       timestamp: new Date().toISOString()
     });
   } catch (err) {
     console.error('❌ Error getting services by category:', err.message);
+    
+    if (err.message.includes('not found')) {
+      return res.status(404).json({
+        success: false,
+        error: 'Category not found',
+        category,
+        details: err.message
+      });
+    }
+    
     res.status(500).json({
       success: false,
       error: 'Failed to get services by category',
@@ -97,17 +106,12 @@ const getServicesByCategory = async (req, res) => {
 // Get service categories
 const getServiceCategories = async (req, res) => {
   try {
-    // Extract unique categories from services
-    const categories = [...new Set(
-      servicesData.services?.map(s => s.category).filter(Boolean) || []
-    )];
+    // Get categories using the data service
+    const categoriesData = await dataService.getCategories();
 
     res.json({
       success: true,
-      data: {
-        categories,
-        count: categories.length
-      },
+      data: categoriesData,
       timestamp: new Date().toISOString()
     });
   } catch (err) {
@@ -124,46 +128,20 @@ const getServiceCategories = async (req, res) => {
 const searchServices = async (req, res) => {
   try {
     const { q: query, category, minPrice, maxPrice } = req.query;
-    
+
     if (!query) {
       return res.status(400).json({
         error: 'Search query is required'
       });
     }
 
-    let filteredServices = servicesData.services || [];
-
-    // Filter by search query
-    filteredServices = filteredServices.filter(service => 
-      service.name?.toLowerCase().includes(query.toLowerCase()) ||
-      service.description?.toLowerCase().includes(query.toLowerCase())
-    );
-
-    // Filter by category if provided
-    if (category) {
-      filteredServices = filteredServices.filter(service => 
-        service.category?.toLowerCase() === category.toLowerCase()
-      );
-    }
-
-    // Filter by price range if provided
-    if (minPrice || maxPrice) {
-      filteredServices = filteredServices.filter(service => {
-        const price = parseFloat(service.price) || 0;
-        if (minPrice && price < parseFloat(minPrice)) return false;
-        if (maxPrice && price > parseFloat(maxPrice)) return false;
-        return true;
-      });
-    }
+    // Search services using the data service
+    const filters = { category, minPrice, maxPrice };
+    const searchResults = await dataService.searchServices(query, filters);
 
     res.json({
       success: true,
-      data: {
-        query,
-        services: filteredServices,
-        count: filteredServices.length,
-        filters: { category, minPrice, maxPrice }
-      },
+      data: searchResults,
       timestamp: new Date().toISOString()
     });
   } catch (err) {

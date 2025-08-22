@@ -1,0 +1,50 @@
+[
+  {
+    "id": "giftcard-1",
+    "name": "Amazon Gift Cards",
+    "description": "Purchase Amazon gift cards for online shopping",
+    "category": "giftcards",
+    "operator": "Amazon",
+    "country": "Global",
+    "countryCode": "US",
+    "price": "25",
+    "currency": "USD",
+    "minAmount": "10",
+    "maxAmount": "2000",
+    "icon": "gift",
+    "popular": true,
+    "featured": true
+  },
+  {
+    "id": "giftcard-2",
+    "name": "Netflix Gift Cards",
+    "description": "Purchase Netflix gift cards for streaming entertainment",
+    "category": "giftcards",
+    "operator": "Netflix",
+    "country": "Global",
+    "countryCode": "US",
+    "price": "30",
+    "currency": "USD",
+    "minAmount": "15",
+    "maxAmount": "200",
+    "icon": "gift",
+    "popular": true,
+    "featured": false
+  },
+  {
+    "id": "giftcard-3",
+    "name": "Steam Gift Cards",
+    "description": "Purchase Steam gift cards for gaming",
+    "category": "giftcards",
+    "operator": "Steam",
+    "country": "Global",
+    "countryCode": "US",
+    "price": "20",
+    "currency": "USD",
+    "minAmount": "10",
+    "maxAmount": "100",
+    "icon": "gift",
+    "popular": false,
+    "featured": true
+  }
+]
