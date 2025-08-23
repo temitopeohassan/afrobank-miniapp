@@ -15,15 +15,30 @@ import { injected } from 'wagmi/connectors'
 import { PAYMENTPROCESSOR_ABI, PAYMENTPROCESSOR_ADDRESS, USDC_ADDRESS } from "@/app/constants/PaymentProcessorAbi"
 import { config } from "@/app/config"
 
+interface Country {
+  name: string
+  countryCode: string
+  exchangeRate: number
+}
+
+interface Operator {
+  id: string
+  name: string
+  countryCode: string
+}
+
 export default function BuyDataPage() {
   const [amount, setAmount] = useState("")
   const [phoneNumber, setPhoneNumber] = useState("")
   const [selectedOperator, setSelectedOperator] = useState("")
+  const [selectedCountry, setSelectedCountry] = useState("")
   const [selectedProduct, setSelectedProduct] = useState("")
-  const [operators, setOperators] = useState<any[]>([])
+  const [operators, setOperators] = useState<Operator[]>([])
+  const [countries, setCountries] = useState<Country[]>([])
   const [products, setProducts] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [operatorsLoading, setOperatorsLoading] = useState(true)
+  const [countriesLoading, setCountriesLoading] = useState(true)
   const [productsLoading, setProductsLoading] = useState(false)
   
   // Blockchain state
@@ -41,9 +56,16 @@ export default function BuyDataPage() {
   const publicClient = usePublicClient()
   const { connect } = useConnect()
 
+  // Load countries and operators on component mount
   useEffect(() => {
-    loadOperators()
+    loadCountries()
   }, [])
+
+  useEffect(() => {
+    if (selectedCountry) {
+      loadOperators()
+    }
+  }, [selectedCountry])
 
   useEffect(() => {
     if (selectedOperator) {
@@ -66,14 +88,15 @@ export default function BuyDataPage() {
     autoConnect()
   }, [isConnected, connect])
 
-  // Calculate USDC amount when product changes
+  // Calculate USDC amount when product or country changes
   useEffect(() => {
-    if (selectedProduct) {
+    if (selectedProduct && selectedCountry) {
       const selectedProductData = products.find((p: any) => p.id === selectedProduct)
-      if (selectedProductData?.price) {
-        // Convert NGN to USD (approximate rate, you can use real-time rates)
-        const ngnAmount = selectedProductData.price
-        const usdValue = ngnAmount / 1500 // Approximate NGN to USD rate
+      const country = countries.find(c => c.countryCode === selectedCountry)
+      
+      if (selectedProductData?.price && country) {
+        const localAmount = selectedProductData.price
+        const usdValue = localAmount / country.exchangeRate
         setUsdcAmount(usdValue)
       } else {
         setUsdcAmount(0)
@@ -81,17 +104,51 @@ export default function BuyDataPage() {
     } else {
       setUsdcAmount(0)
     }
-  }, [selectedProduct, products])
+  }, [selectedProduct, products, selectedCountry, countries])
+
+  const loadCountries = async () => {
+    try {
+      setCountriesLoading(true)
+      const response = await fetch('/api/services-data/getCountries')
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success && data.data) {
+          setCountries(data.data)
+          // Set default country to first available
+          if (data.data.length > 0) {
+            setSelectedCountry(data.data[0].countryCode)
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load countries:', error)
+      // Fallback to default countries if API fails
+      setCountries([
+        { name: 'Nigeria', countryCode: 'NG', exchangeRate: 1300 },
+        { name: 'United States', countryCode: 'US', exchangeRate: 1 },
+        { name: 'United Kingdom', countryCode: 'GB', exchangeRate: 0.79 },
+        { name: 'European Union', countryCode: 'EU', exchangeRate: 0.92 }
+      ])
+      setSelectedCountry('NG')
+    } finally {
+      setCountriesLoading(false)
+    }
+  }
 
   const loadOperators = async () => {
     try {
       setOperatorsLoading(true)
-      const response = await topupAPI.getOperators({ countryCode: 'NG', size: 50 })
+      const response = await topupAPI.getOperators({ countryCode: selectedCountry, size: 50 })
       if (response && typeof response === 'object' && 'success' in response && response.success) {
         setOperators((response as any).data?.content || [])
+        console.log('Operators loaded for country', selectedCountry, ':', (response as any).data?.content)
+      } else {
+        console.error('Invalid response format:', response)
+        setOperators([])
       }
     } catch (error) {
       console.error('Failed to load operators:', error)
+      setOperators([])
     } finally {
       setOperatorsLoading(false)
     }
@@ -110,6 +167,16 @@ export default function BuyDataPage() {
       console.error('Failed to load products:', error)
     } finally {
       setProductsLoading(false)
+    }
+  }
+
+  const getCurrencySymbol = (countryCode: string) => {
+    switch (countryCode) {
+      case 'NG': return '₦'
+      case 'US': return '$'
+      case 'GB': return '£'
+      case 'EU': return '€'
+      default: return '₦'
     }
   }
 
@@ -283,6 +350,40 @@ export default function BuyDataPage() {
             <p className="text-muted-foreground text-sm">Enter the amount for your data bundle</p>
           </CardHeader>
           <CardContent className="space-y-6">
+            {/* Country Selection */}
+            <div className="space-y-2">
+              <Label htmlFor="country">Country</Label>
+              <Select value={selectedCountry} onValueChange={(value) => {
+                setSelectedCountry(value)
+                setSelectedOperator("") // Reset operator when country changes
+                setSelectedProduct("") // Reset product when country changes
+              }}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select country" />
+                </SelectTrigger>
+                <SelectContent>
+                  {countriesLoading ? (
+                    <SelectItem value="loading" disabled>
+                      <div className="flex items-center gap-2">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Loading countries...
+                      </div>
+                    </SelectItem>
+                  ) : countries.length > 0 ? (
+                    countries.map((country) => (
+                      <SelectItem key={country.countryCode} value={country.countryCode}>
+                        {country.name}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="no-countries" disabled>
+                      No countries available
+                    </SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+
             {/* Operator Selection */}
             <div className="space-y-2">
               <Label htmlFor="operator">Mobile Operator</Label>
@@ -298,12 +399,16 @@ export default function BuyDataPage() {
                         Loading operators...
                       </div>
                     </SelectItem>
-                  ) : (
-                    operators.map((operator: any) => (
+                  ) : operators.length > 0 ? (
+                    operators.map((operator: Operator) => (
                       <SelectItem key={operator.id} value={operator.id}>
                         {operator.name}
                       </SelectItem>
                     ))
+                  ) : (
+                    <SelectItem value="no-operators" disabled>
+                      No operators available
+                    </SelectItem>
                   )}
                 </SelectContent>
               </Select>
@@ -328,7 +433,7 @@ export default function BuyDataPage() {
                     ) : (
                       products.map((product: any) => (
                         <SelectItem key={product.id} value={product.id}>
-                          {product.name} - ₦{product.price}
+                          {product.name} - {getCurrencySymbol(selectedCountry)}{product.price}
                         </SelectItem>
                       ))
                     )}
@@ -407,13 +512,18 @@ export default function BuyDataPage() {
             </p>
             <div className="space-y-2 mb-6">
               <p className="text-center dark:text-white">
-                <span className="font-bold">Operator:</span> {operators.find((op: any) => op.id === selectedOperator)?.name || 'N/A'}
+                <span className="font-bold">Country:</span> {
+                  countries.find(c => c.countryCode === selectedCountry)?.name || 'N/A'
+                }
+              </p>
+              <p className="text-center dark:text-white">
+                <span className="font-bold">Operator:</span> {operators.find((op: Operator) => op.id === selectedOperator)?.name || 'N/A'}
               </p>
               <p className="text-center dark:text-white">
                 <span className="font-bold">Bundle:</span> {products.find((p: any) => p.id === selectedProduct)?.name || 'N/A'}
               </p>
               <p className="text-center dark:text-white">
-                <span className="font-bold">Price:</span> ₦{products.find((p: any) => p.id === selectedProduct)?.price || 'N/A'}
+                <span className="font-bold">Price:</span> {getCurrencySymbol(selectedCountry)}{products.find((p: any) => p.id === selectedProduct)?.price || 'N/A'}
               </p>
               <p className="text-center dark:text-white">
                 <span className="font-bold">USDC Value:</span> ${usdcAmount.toFixed(2)}
