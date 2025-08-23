@@ -15,14 +15,28 @@ import { injected } from 'wagmi/connectors'
 import { PAYMENTPROCESSOR_ABI, PAYMENTPROCESSOR_ADDRESS, USDC_ADDRESS } from "@/app/constants/PaymentProcessorAbi"
 import { config } from "@/app/config"
 
+interface Country {
+  name: string
+  countryCode: string
+  exchangeRate: number
+}
+
+interface Operator {
+  id: string
+  name: string
+  countryCode: string
+}
+
 export default function BuyAirtimePage() {
   const [amount, setAmount] = useState("")
   const [phoneNumber, setPhoneNumber] = useState("")
   const [selectedOperator, setSelectedOperator] = useState("")
-  const [selectedCountry, setSelectedCountry] = useState("NG")
-  const [operators, setOperators] = useState<any[]>([])
+  const [selectedCountry, setSelectedCountry] = useState("")
+  const [operators, setOperators] = useState<Operator[]>([])
+  const [countries, setCountries] = useState<Country[]>([])
   const [loading, setLoading] = useState(false)
   const [operatorsLoading, setOperatorsLoading] = useState(true)
+  const [countriesLoading, setCountriesLoading] = useState(true)
   
   // Blockchain state
   const [showConfirmModal, setShowConfirmModal] = useState(false)
@@ -39,8 +53,15 @@ export default function BuyAirtimePage() {
   const publicClient = usePublicClient()
   const { connect } = useConnect()
 
+  // Load countries and operators on component mount
   useEffect(() => {
-    loadOperators()
+    loadCountries()
+  }, [])
+
+  useEffect(() => {
+    if (selectedCountry) {
+      loadOperators()
+    }
   }, [selectedCountry])
 
   // Auto connect wallet on component mount
@@ -60,29 +81,49 @@ export default function BuyAirtimePage() {
 
   // Calculate USDC amount when amount changes
   useEffect(() => {
-    if (amount && parseFloat(amount) > 0) {
-      // Convert local currency to USD based on country
+    if (amount && parseFloat(amount) > 0 && selectedCountry) {
       const localAmount = parseFloat(amount)
-      let usdValue = 0
+      const country = countries.find(c => c.countryCode === selectedCountry)
       
-      if (selectedCountry === 'NG') {
-        usdValue = localAmount / 1500 // NGN to USD rate
-      } else if (selectedCountry === 'US') {
-        usdValue = localAmount // Already in USD
-      } else if (selectedCountry === 'GB') {
-        usdValue = localAmount * 1.25 // GBP to USD rate
-      } else if (selectedCountry === 'EU') {
-        usdValue = localAmount * 1.08 // EUR to USD rate
+      if (country) {
+        const usdValue = localAmount / country.exchangeRate
+        setUsdcAmount(usdValue)
       } else {
-        // Default to NGN rate for other countries
-        usdValue = localAmount / 1500
+        setUsdcAmount(0)
       }
-      
-      setUsdcAmount(usdValue)
     } else {
       setUsdcAmount(0)
     }
-  }, [amount, selectedCountry])
+  }, [amount, selectedCountry, countries])
+
+  const loadCountries = async () => {
+    try {
+      setCountriesLoading(true)
+      const response = await fetch('/api/services-data/getCountries')
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success && data.data) {
+          setCountries(data.data)
+          // Set default country to first available
+          if (data.data.length > 0) {
+            setSelectedCountry(data.data[0].countryCode)
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load countries:', error)
+      // Fallback to default countries if API fails
+      setCountries([
+        { name: 'Nigeria', countryCode: 'NG', exchangeRate: 1300 },
+        { name: 'United States', countryCode: 'US', exchangeRate: 1 },
+        { name: 'United Kingdom', countryCode: 'GB', exchangeRate: 0.79 },
+        { name: 'European Union', countryCode: 'EU', exchangeRate: 0.92 }
+      ])
+      setSelectedCountry('NG')
+    } finally {
+      setCountriesLoading(false)
+    }
+  }
 
   const loadOperators = async () => {
     try {
@@ -100,6 +141,26 @@ export default function BuyAirtimePage() {
       setOperators([])
     } finally {
       setOperatorsLoading(false)
+    }
+  }
+
+  const getCurrencySymbol = (countryCode: string) => {
+    switch (countryCode) {
+      case 'NG': return '₦'
+      case 'US': return '$'
+      case 'GB': return '£'
+      case 'EU': return '€'
+      default: return '₦'
+    }
+  }
+
+  const getQuickAmounts = (countryCode: string) => {
+    switch (countryCode) {
+      case 'NG': return ["100", "200", "500", "1000", "2000", "5000"]
+      case 'US': return ["5", "10", "20", "50", "100", "200"]
+      case 'GB': return ["5", "10", "20", "50", "100", "200"]
+      case 'EU': return ["5", "10", "20", "50", "100", "200"]
+      default: return ["100", "200", "500", "1000", "2000", "5000"]
     }
   }
 
@@ -283,10 +344,24 @@ export default function BuyAirtimePage() {
                   <SelectValue placeholder="Select country" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="NG">Nigeria (₦)</SelectItem>
-                  <SelectItem value="US">United States ($)</SelectItem>
-                  <SelectItem value="GB">United Kingdom (£)</SelectItem>
-                  <SelectItem value="EU">European Union (€)</SelectItem>
+                  {countriesLoading ? (
+                    <SelectItem value="loading" disabled>
+                      <div className="flex items-center gap-2">
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Loading countries...
+                      </div>
+                    </SelectItem>
+                  ) : countries.length > 0 ? (
+                    countries.map((country) => (
+                      <SelectItem key={country.countryCode} value={country.countryCode}>
+                        {country.name}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="no-countries" disabled>
+                      No countries available
+                    </SelectItem>
+                  )}
                 </SelectContent>
               </Select>
             </div>
@@ -307,7 +382,7 @@ export default function BuyAirtimePage() {
                       </div>
                     </SelectItem>
                   ) : operators.length > 0 ? (
-                    operators.map((operator: any) => (
+                    operators.map((operator: Operator) => (
                       <SelectItem key={operator.id} value={operator.id}>
                         {operator.name}
                       </SelectItem>
@@ -336,7 +411,7 @@ export default function BuyAirtimePage() {
 
             {/* Amount */}
             <div className="space-y-2">
-              <Label htmlFor="amount">Amount ({selectedCountry === 'NG' ? '₦' : selectedCountry === 'US' ? '$' : selectedCountry === 'GB' ? '£' : '€'})</Label>
+              <Label htmlFor="amount">Amount ({getCurrencySymbol(selectedCountry)})</Label>
               <Input
                 id="amount"
                 type="number"
@@ -356,40 +431,14 @@ export default function BuyAirtimePage() {
                     ${usdcAmount.toFixed(2)}
                   </span>
                 </div>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  Exchange Rate: {
-                    selectedCountry === 'NG' ? '₦1,500 = $1.00' :
-                    selectedCountry === 'US' ? '$1.00 = $1.00' :
-                    selectedCountry === 'GB' ? '£1.00 = $1.25' :
-                    '€1.00 = $1.08'
-                  }
-                </p>
               </div>
             )}
 
             {/* Quick Amount Buttons */}
             <div className="grid grid-cols-3 gap-3">
-              {selectedCountry === 'NG' ? 
-                ["100", "200", "500", "1000", "2000", "5000"].map((quickAmount) => (
+              {getQuickAmounts(selectedCountry).map((quickAmount) => (
                   <Button key={quickAmount} variant="outline" onClick={() => setAmount(quickAmount)} className="text-sm">
-                    ₦{quickAmount}
-                  </Button>
-                )) :
-                selectedCountry === 'US' ?
-                ["5", "10", "20", "50", "100", "200"].map((quickAmount) => (
-                  <Button key={quickAmount} variant="outline" onClick={() => setAmount(quickAmount)} className="text-sm">
-                    ${quickAmount}
-                  </Button>
-                )) :
-                selectedCountry === 'GB' ?
-                ["5", "10", "20", "50", "100", "200"].map((quickAmount) => (
-                  <Button key={quickAmount} variant="outline" onClick={() => setAmount(quickAmount)} className="text-sm">
-                    £{quickAmount}
-                  </Button>
-                )) :
-                ["5", "10", "20", "50", "100", "200"].map((quickAmount) => (
-                  <Button key={quickAmount} variant="outline" onClick={() => setAmount(quickAmount)} className="text-sm">
-                    €{quickAmount}
+                    {getCurrencySymbol(selectedCountry)}{quickAmount}
                   </Button>
                 ))
               }
@@ -441,23 +490,16 @@ export default function BuyAirtimePage() {
             <div className="space-y-2 mb-6">
               <p className="text-center dark:text-white">
                 <span className="font-bold">Country:</span> {
-                  selectedCountry === 'NG' ? 'Nigeria' :
-                  selectedCountry === 'US' ? 'United States' :
-                  selectedCountry === 'GB' ? 'United Kingdom' :
-                  'European Union'
+                  countries.find(c => c.countryCode === selectedCountry)?.name || 'N/A'
                 }
               </p>
               <p className="text-center dark:text-white">
-                <span className="font-bold">Operator:</span> {operators.find((op: any) => op.id === selectedOperator)?.name || 'N/A'}
+                <span className="font-bold">Operator:</span> {operators.find((op: Operator) => op.id === selectedOperator)?.name || 'N/A'}
               </p>
               <p className="text-center dark:text-white">
                 <span className="font-bold">Amount:</span> {
-                  selectedCountry === 'NG' ? `₦${amount}` :
-                  selectedCountry === 'US' ? `$${amount}` :
-                  selectedCountry === 'GB' ? `£${amount}` :
-                  `€${amount}`
-                }
-              </p>
+                  getCurrencySymbol(selectedCountry)}{amount}
+                </p>
               <p className="text-center dark:text-white">
                 <span className="font-bold">USDC Value:</span> ${usdcAmount.toFixed(2)}
               </p>
